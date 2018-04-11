@@ -16,6 +16,7 @@ nks8q2l36fg.tex
 figures/JohnGriffiths_Esig2
 dl4q93ivbtg.tex
 figures/theta_m_combined_uncertainties
+figures/theta_m_sensitivity_coefficients
 cpvqhhe7o68.tex
 qblla8god5g.tex
 figures/JohnGriffiths_Esig3

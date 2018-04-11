@@ -8,7 +8,7 @@ grid:
   rows: 1
   columns: 1
   grid_elements:
-  - path: figures/JohnGriffiths_Esig3/theta_m_sensitivity_coefficients.png
+  - path: figures/JohnGriffiths_Esig3/E_delta_m_combined_uncertainties.png
     type: static
     from:
     - 1
@@ -17,4 +17,4 @@ grid:
     - 1
     - 1
     folder_url: "/users/4990/articles/297556/master/folder/figures/JohnGriffiths_Esig3"
-    url: "/users/4990/articles/297556/master/file/figures/JohnGriffiths_Esig3/theta_m_sensitivity_coefficients.png"
+    url: "/users/4990/articles/297556/master/file/figures/JohnGriffiths_Esig3/E_delta_m_combined_uncertainties.png"

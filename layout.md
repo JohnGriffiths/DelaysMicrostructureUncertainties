@@ -5,7 +5,6 @@ a5mktq7h9vo.tex
 1o4t43hj39g.tex
 lvegs5qlci.tex
 uts90ose53g.tex
-s3kmkgmf958.tex
 bclkiqlhpf.tex
 1mne4hmig68.tex
 figures/JohnGriffiths_Esig

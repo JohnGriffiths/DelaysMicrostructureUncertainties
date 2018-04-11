@@ -13,7 +13,8 @@ figures/JohnGriffiths_Esig
 sak6qrs20ho.tex
 i7225sa0ts8.tex
 figures/JohnGriffiths_Esig1
-ehaqh1gjql.tex
 6v8f5etqga.tex
 nks8q2l36fg.tex
+figures/JohnGriffiths_Esig2
+dl4q93ivbtg.tex
 bo0j58fv7ng.tex

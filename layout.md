@@ -17,7 +17,6 @@ figures/JohnGriffiths_Esig2
 8df9d7l02ao.tex
 dl4q93ivbtg.tex
 qblla8god5g.tex
-sivcdedgmd8.tex
 figures/JohnGriffiths_Esig3
 figures/JohnGriffiths_Esig4
 bo0j58fv7ng.tex

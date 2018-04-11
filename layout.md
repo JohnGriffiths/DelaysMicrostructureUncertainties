@@ -19,4 +19,5 @@ dl4q93ivbtg.tex
 qblla8god5g.tex
 sivcdedgmd8.tex
 figures/JohnGriffiths_Esig3
+figures/JohnGriffiths_Esig4
 bo0j58fv7ng.tex

@@ -1,0 +1,638 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+%\usepackage{natbib} % JG_ADD
+\usepackage{apacite} % JG_ADD
+
+\title{Estimating conduction delays from tractography and microstructure imaging: an uncertainty propagation analysis}
+\author{John D. Griffiths}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+Communication between spatially distant locations in the brain is mediated by long-range white matter fibre bundles, which vary considerably in their length, axonal diameter and myelin thickness distributions, as well as their relative proportions of myelinated vs. unmyelinated axons. These quantities are the principal determinants of the conduction delay distribution (CDD) associated with monosynaptic connections between a given pair of brain regions, which plays an important role in models of neural dynamics and information processing. With recent developments in MR acquisition and modelling techniques, it is now becoming possible to obtain estimates of several of the above variables \textit{in-vivo}, raising the exciting prospect of characterizing the CDD of a given white matter pathway directly from noninvasive structural measurements. The present study provides a novel technical contribution to this endeavour by undertaking a systematic uncertainty evaluation for microstructure-based conduction delay estimation, using linear error propagation techniques. Assessing the level of precision (inverse uncertainty) in model-derived estimates of an outcome variable (e.g. the parameters or moments of a CDD) requires not just the identification of the relevant variables (here we focus on tract lengths, axon diameters, and g-ratios), but also a quantification of the reduction in uncertainty in that outcome variable that their measurement provides. This depends on three factors: i) actual variability of the quantity of interest (within and across subjects) ii) accuracy of the measurement techniques, and iii) the relative contribution of each measured variable to the outcome variable, for a given measurement model. We introduce a novel measurement model for the CDD, by taking the standard formula for calculating an individual axon's conduction delay given its length, diameter, and g-ratio, and applying it directly to a gamma distribution of diameters through its scale parameter. The result is an inverse-gamma form for the CDD that has arithmetically computable moments, and is amenable to uncertainty evaluation using analytic techniques. Our results indicate that for myelinated fibre CDDs, axonal diameter distribution and myelin thickness parameters contribute substantially more to uncertainty in the CDD than tract lengths. Additionally, we observe that for 'complete' CDDs incorporating both myelinated and unmyelinated fibres, all other parameters are dwarfed by the influence of the mixing fraction for the two fibre types. Implications of these findings for use of conduction delays in neurophysiological models and in studies of white matter degeneration are discussed. These findings highlight the importance of methodological improvement and wider adoption of new microstructure imaging techniques for noninvasive characterization of conduction delays, and provide a framework for further enhancement and refinement of CDD estimates. 
+
+\end{abstract}
+
+\section{Background}
+
+\subsection{Conduction delays in neural and cognitive function}
+
+Conduction delays play a key role in a number of computational and dynamic aspects of brain function, as well as placing certain constraints on its structural and functional organization. For example, it has been proposed that time delays in local circuits facilitate complex computations in minimal time \shortcite{izhikevich2006polychronization}, and that relative spike timings represent a plausible coding principle for rapid and reliable visual object recognition \cite{vanrullen2002surfing}. Precise coordination of action potential arrival times at the sub-millisecond scale are also known to be critical for oscillatory synchrony \shortcite{fries2005a}, and for spike-time dependent plasticity 
+\shortcite{markram1997regulation, zhang1998a}; although the prevalence of temporal (as opposed to rate) coding in the majority of cortical function has been challenged on theoretical grounds \shortcite{shadlen1998the}. Delays also play a key role in sculpting the dynamics of neural systems at the coarser meso- or macroscopic spatial and temporal scales studied in humans with noninvasive techniques such as electroencephalography (EEG), magnetoencephalography (MEG), and functional magnetic resonance imaging (fMRI). Models of the EEG alpha rhythm generation as reflecting global modes in corticocortical \shortcite{nunez2006electric}  or thalamocortical \shortcite{robinson2003neurophysical} networks consider the location of peaks in the M/EEG power spectrum to be due to characteristic time delays in long-range fibre bundles. Ghosh and colleagues (Ghosh et al. \citeyearNP{ghosh2008noise}; see also Deco et al. \citeyearNP{deco2009key}) studied the effects of delays on dynamics in networks of coupled oscillators with realistic cortical topologies and distance-dependent delays. In their study, a model with time delays was found to reproduce several characteristic features of M/EEG and fMRI data: intermittent high-frequency oscillations with transient and spindle-like time courses and dominant frequencies in the alpha range (8-12Hz), and low-frequency (<0.1Hz) oscillations in regions of parietal and cingulate cortices, closely matching the classic default-mode network patterns.  Ghosh et al. state that “The space-time structure of the couplings defined by the anatomical connectivity (space) and the time delays (time) will be the primary component shaping
+the dynamic repertoire of any large scale network”. These observations strongly suggest that delay changes due to white matter degeneration could have potentially extensive effects on neural and cognitive function. 
+
+Limited support for a role of conduction delays (qua conduction velocities) in individual differences in cognitive abilities comes from the work of Vernon and colleagues, who found associations between a general intelligence factor and conduction velocity (McRorie \& Cooper  \citeyearNP{mcrorie2004synaptic}, Reed et al. \citeyearNP{reed2004confirmation}; Reed \& Jensen \citeyearNP{reed1991arm,reed1992conduction,reed1993a}
+Vernon \citeyearNP{vernon1983speed}; Vernon \& Mori \citeyearNP{vernon1992intelligence} ; but see Wickett et al. \citeyearNP{wickett1994peripheral} for failed replications, and Saint-Amour et al. \citeyearNP{saintamour2005can} for criticisms). In ageing, reduced conduction velocities have been demonstrated in motor pathways of both aged cats \shortcite{morales1987basic,xi1999changes} and aged rats \shortcite{astonjones1980brain}. Evidence for central nervous system slowing in humans comes from the work of Allison and colleagues \shortcite{allison1984developmental,allison1983brain}, who studied the effects of age and sex on evoked potentials measured by EEG. They found that P50, P100, and P300 potentials showed an increase in latency with age.  Amplitude effects were also observed, but largely independent of latency changes. Whilst they list a number of potential causes of the effects, the authors favour slowed axonal conduction, possibly with a selective loss of large myelinated fibres \shortcite{morrison1990aging}, as the primary mechanism of these changes. Other authors have reported similar results (e.g. Dustman et al. \citeyearNP{dustman1990age}, Kuba et al. \citeyearNP{kuba2012aging}). More recently, in a series of studies on lifespan changes in EEG properties in a large cohort of 1400 subjects, Kerr et al. (\citeyearNP{kerr2010age} 
+; see also Kerr et al. \citeyearNP{kerr2011modelbased}, Chiang et al. \citeyearNP{chiang2011age}, Van Albada et al. \citeyearNP{vanalbada2010neurophysiological}) reported an age-related increase in auditory oddball latency of ∼2ms/year. This body of work is notable because it exploits a sophisticated thalamocortical model of the neural dynamics that generate the signals measured by EEG. Importantly, this allowed the conclusion of an age trend in thalamocortical conduction delay. Complementary analyses of EEG spectra from the same subjects using the same generative biophysical model drew similar conclusions of increased thalamocortical delays in older subjects \shortcite{vanalbada2010neurophysiological}. Thus these authors echo Allison et al.  \citeyear{allison1984developmental} in concluding that an age-related change in the conduction velocity of white matter pathways underlie the effects seen in the EEG. 
+
+The research summarized above gives gives some indication of the importance of conduction delays as an object of investigation in computational, cognitive, and clinical neuroscience. A comprehensive review is beyond the scope of this paper; further discussion can be found in Griffiths \citeyear{griffiths2014the}. We now review briefly several technical considerations of central importance to the present study: models, assumptions, and associated uncertainties involved in estimation of conduction delays from microscopy and non-invasive microstructure imaging data. 
+
+
+\subsection{Estimating conduction delays from microscopy and microstructure imaging data}
+
+% - the key thing for this paper is that there is a diameter distribution and associated velocity and delay distribution 
+
+Broadly speaking, conduction delays may be estimated from empirical data in one of four ways, 
+  
+\begin{enumerate}
+\item Direct (neural or behavioural) response latency measurements such as ERPs, reaction times, or motor nerve conduction times  \shortcite{reed1991arm,allison1984developmental, marzi1999the,lodhia2017decreased,wishart1995interhemispheric}
+\item Identification of lags, cross-correlations, MVAR model orders; or phase lags \shortcite{cimponeriu2004estimation,brovelli2004beta}
+
+\item Parameter estimation from multivariate time- or frequency-domain biophysical network models \cite{friston2011dcm, kerr2011modelbased}.
+
+\item Calculation from relevant microstructural variables (axon diameter, myelin thickness, fibre length) \shortcite{caminiti2009evolution,caminiti2013diameter,ringo1994time}
+\end{enumerate}
+
+Note that many techniques may fall into one or several of these categories, and will differ in multiple additional ways such as the type of delay being measured (e.g. individual cells; population average; population fastest; etc.) and how the delay is calculated and parametrized in a given model. Categories 1-3 above all operate on neurophysiological or behavioural data and rely on models of varying complexity that utilize timing relationships between measured variables, or relative to a stimulus or motor response, to identify delays. In contrast, category 4 - which shall be our focus in this paper - does not directly use any measurements of neural activity. Rather, it exploits known properties relating delays to the microstructural anatomy of axons, as well as the statistics of the axonal populations that comprise white matter fascicles in the central and peripheral nervous systems. In the following we discuss the details and assumptions of this approach, first in the context of individual axons, and then our extension to populations of axons with a distribution of axonal calibers. 
+
+
+It was noted as early as the 1930s that the conduction velocity $v_m$ of myelinated axons is approximately linearly related to its outer fibre diameter $F_m$ (the diameter of the outermost part of the myelin sheath), with a coefficient $c_m$ of ~0.7  \shortcite{hursh1939the,rushton1951a,waxman1972relative}. The exact value of this coefficient has been debated and revised, but the general idea has been pretty consistent for some time. Since the $F$ is a composite of two quantities (axonal diameter and myelin thickness), it is useful to decompose it into $F_m = g/d_m$. Whilst the 'g-ratio' $g$ has been reported as low as 0.2 and as high as 0.8, the remarkable consistency of this quantity around 0.6-0.7 has been the subject of several theoretical research papers 
+\shortcite{rushton1951a,chomiak2009what,paus2009could,caminiti2009evolution,ritchie1982on}. Thus $v_m$ and the individual myelinated fibre conduction \textit{delay} $\delta_m$ can be computed from $d_m$, $g$, and the axonal length $l$ as follows
+
+\begin{eqnarray}
+v_m      =& g^{-1} d_m c_m \\
+\delta_m =& l^{-1} v_m
+\end{eqnarray}
+
+
+
+
+This constitutes a simple and compact framework for calculating conduction speed and associated delays for individual axons, and has been used widely in computational and theoretical studies on a diverse range of subjects such as dynamics \shortcite{bojak2010axonal}, species differences in information processing capacity \shortcite{caminiti2009evolution}, and efficiency of brain organization \shortcite{chomiak2009what}. However, for the meso- and macro-scale level of neural populations that is typically of interest in neuroimaging, it is necessary to extend the single axon model of Eqs. 1-2 to  populations of axons, that may vary considerably in $d_m$ and $g$, and even $l$. 
+
+Light and electron microscopy images of the cross-sections of nerve fascicles show that they comprise a mixture of myelinated and unmyelinated fibres of various sizes\footnote{We return to the interesting and challenging case of unmyelinated fibres later sections; for present purposes we focus on myelinated fibres only}. Critically, the profile of axon diameters, or \textit{axon diameter distribution} (ADD), varies across species \shortcite{caminiti2013diameter}, across brain regions within a species \shortcite{aboitiz1992fiber,innocenti2010fiber}, and is modified by ageing and neurodegenerative disease \shortcite{peters2009the}. Thus the ADD (together with other information such as estimates of axonal density) represents an anatomically concrete and physiologically meaningful marker of white matter status\footnote{Unlike, for example, popular diffusion MRI-based metrics such as fractional anisotropy (FA)}. 
+
+Fits to histograms of axon diameter counts indicate that myelinated fibre ADDs are well-described by a gamma distribution, with peak (mode) around 1$\mu$m and a long tail extending up to approximately 10$\mu$m. \shortcite{aboitiz1992fiber}. Several studies have used these microscopy-derived ADD histograms, together with the above equations, to obtain estimates the \textit{conduction velocity distribution} (CVD) and \textit{conduction delay distribution} (CDD) associated with a given white matter fascicle. This is done by computing Eq. 2 for all diameters within the ranges measured, and and assigning the CVD and CDD bin weightings directly from the corresponding ADD bin weightings. Whilst this approach of treating each histogram bin separately is the most empirically accurate and assumption-free way of computing CDDs (when an empirical ADD histogram is available), it is problematic when we want to know about uncertainty. This is due to the non-independence of nearby bins in the axon size count histograms. If, for example, we calculated variability (e.g. standard deviation over samples) in histogram bin weightings for different sections of the corpus callosum, and summed this uncertainty over bins, we would get a massively over-inflated estimate of the resultant total uncertainty, because adjacent bin weights will be highly correlated and therefore do not contribute independently to the overall uncertainty. 
+
+For this reason it is preferable for present purposes to work directly with probability density functions summarizing ADD profiles, which have low degrees of freedom (generally 2 parameters), and therefore minimal redundancy. In the following we therefore represent the population of diameters within a fibre bundle by the gamma-distributed random variable $\mathbf{X_D} \sim G(x,k,\theta)$\footnote{We note that alternative and potentially superior parametric distributions have been proposed for the ADD (e.g. Sepehrband et al. \citeyearNP{sepehrband2016parametric}). Here we restrict ourselves to the gamma distribution since it has been the most widely used to date; however the majority of the following is easily adapted to alternative distribution functions. 
+}, whose probability density function $G(x)$ for scale and shape parameters $\theta$ and $k$, evaluated at a given diameter $x$, is given by 
+
+
+\begin{eqnarray}
+G(x,k,\theta) =& \frac{\displaystyle x^{k^{-1} exp(- \frac{\displaystyle x}{ \displaystyle \theta})}}{\displaystyle \theta^{k} \Gamma(k)} 
+\end{eqnarray}
+
+where $\Gamma$ is the gamma function. 
+
+Using this representation, we can now compute the CVDs and CDDs directly for the entire distribution simultaneously, rather than from individual bins. This is essential for our application to uncertainty estimation, but may also prove useful in other contexts.
+
+
+We first note the following two properties of gamma-distributed random variables: 
+
+\begin{eqnarray}
+a \mathbf{X} =& G(k,a \theta ) \\
+\mathbf{X}^{-1} =& G^{-1}(k,\theta^{-1} )
+\end{eqnarray}
+
+where $G^{-1}$ is an inverse gamma distribution
+
+\begin{eqnarray}
+G^{-1}(x,k,\theta) =& \frac{\displaystyle x^{-k-1} exp(- \frac{\displaystyle \theta}{ \displaystyle k})}{\displaystyle \theta^{k} \Gamma(k)} 
+\end{eqnarray}
+
+From this is follows that the CVD $\mathbf{V_m}$ and CDD $\mathbf{\Delta_m}$ for a myelinated fibre bundle of length $L$, g-ratio $g$, and ADD scale and shape parameters $k_m$ and $\theta_{D_{m}}$, are given by 
+
+\begin{eqnarray}
+\mathbf{V_m} =& G(k_m, \theta_{V_{m}}) \\
+\mathbf{\Delta_m} =& G^{-1}(k_m, \theta_{\Delta_{m}})
+\end{eqnarray}
+
+where 
+
+\begin{eqnarray}
+\theta_{V{_m}} =& g^{-1} \theta_{D_{m}}  \\
+\theta_{\Delta{_m}} =& L^{-1} \theta_{V_{m}}
+\end{eqnarray}
+
+Finally, the mean $\mu_{\Delta_m}$ (or expectation $E_{\Delta_m}$) of $\mathbf{\Delta}_m$ is given arithmetically by 
+
+\begin{eqnarray}
+\mu_{\Delta_m} =& \frac{\displaystyle k_m}{\displaystyle \theta_{\Delta_m} -1} \end{eqnarray}
+
+and the mode $M_{\Delta_m}$ by 
+
+\begin{eqnarray}
+M_{\Delta_m} =& \frac{\displaystyle k_m}{\displaystyle \theta_{\Delta_m} +1}
+\end{eqnarray}
+
+A summary of these calculations is shown in figure 1. 
+
+
+
+
+
+\begin{figure}[h!]
+\begin{center}
+%\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_666_1.png}% This is a *.jpg file
+\end{center}
+\caption[\emph{From white matter microstructure to conduction delay distributions}]{\emph{From white matter microstructure to conduction delay distributions}. Figure here with diagram of fibre bundle cross section showing distribution of diameters and myelin thickness; also equations for calculations and transforms from ADD->CVD->CDD} \label{fig:1}
+\end{figure}
+
+%The chief motivation of the present study is the techniques developed by Assaf, Alexander, and others. In particular, AxCaliber allows estimation the ADD gamma distribution parameters. 
+
+%In the next sections we detail our methodological approach to computing CDD uncertainties, and sensitivities for the various parameters in the above equations. 
+
+\subsection{Present Study}
+
+The principal aim of the present study is to examine the how estimates of various quantities relating to$\mathbf{\Delta}_m$ - chiefly $\theta_{\Delta_m}$ and $M_{\Delta_m}$, depend on uncertainty in the values of $L$,$k$, and $\theta_m$, and $g$, given the both the typical ranges of these parameters and the estimates that can potentially be obtained from noninvasive imaging. Our focus here is loosely on MR imaging in humans, but the general conclusions and techniques used may also be applied in microscopy studies (e.g. Caminiti et al. \citeyearNP{caminiti2009evolution}, Innocenti et al. \citeyearNP{innocenti2010fiber}) in both human and non-human samples. In the following sections we now describe in detail the uncertainty evaluation procedure, as well as the ranges and expected values chosen for the key parameters. 
+
+
+% - lengths. a lot of work just using lengths and assuming a value for velocity. 
+% - now we can estimate diameters and g-ratios. 
+% - there are limitations in these measurements but in principle they can be used to make calculations of the kind done above. this is what we're concerned with here.
+ 
+%Conduction delays play a key role in sculpting patterns of brain dynamics at the macroscopic scale (Deco et al., 2009). Until relatively recently it has been necessary for researchers looking to model these phenomena to use heuristics such as head size or population averages from post-mortem studies (Nunez \& Srinivasen 2006) to estimate the length of fibre pathways in individual subjects. Nowadays, diffusion-weighted MR tractography provides a more direct and noninvasive measure of this anatomical feature, and a number of researchers have incorporated tractography-based connection length values into their models (Izhikevich \& Edelman, 2008; Valdes-Sosa et al., 2009). Many still use non-tractography proxy methods, however, based on e.g. Euclidean distance (e.g.~Ghosh et al., 2008; Deco et al., 2009) or volumetric segmentation of T1-weighted MR images (Bojak et al., 2011). As a large proportion of this research is concerned with developing either forward (e.g. Bojak et al., 2011) or inverse (e.g. David et al. 2006; Valdes-Sosa et al. 2009) models that capture subject-specific anatomy and neural activity patterns, the relative accuracy of these various non-tractography or non-subject-specific proxy measures of fibre length is an important practical question. Similarly, a question that is certain to receive growing attention in the coming decade is how the `new breed' of MRI-based tissue microstructure metrics might contribute to this enterprise. Recent developments in structural MR imaging are making measurements of both axon diameters (Assaf et al., 2006, 2007, 2008; Alexander et al., 2010), myelin thickness (Stikov et al., 2011), myelin dystrophy (Avram et al., 2010). Whether these developments play a peripheral or a central role in future models of human brain dynamics will be a function of the precision of the measurements and the degree of precision required in the modelling process.
+
+
+
+%\subsection{Conduction delays and neuroanatomy}
+
+%Conduction delays play a key role in sculpting patterns of brain dynamics at the macroscopic scale (Deco et al., 2009). Until relatively recently it has been necessary for researchers looking to model these phenomena to use heuristics such as head size or population averages from post-mortem studies (Nunez \& Srinivasen 2006) to estimate the length of fibre pathways in individual subjects. Nowadays, diffusion-weighted MR tractography provides a more direct and noninvasive measure of this anatomical feature, and a number of researchers have incorporated tractography-based connection length values into their models (Izhikevich \& Edelman, 2008; Valdes-Sosa et al., 2009). Many still use non-tractography proxy methods, however, based on e.g. Euclidean distance (e.g.~Ghosh et al., 2008; Deco et al., 2009) or volumetric segmentation of T1-weighted MR images (Bojak et al., 2011). As a large proportion of this research is concerned with developing either forward (e.g. Bojak et al., 2011) or inverse (e.g. David et al. 2006; Valdes-Sosa et al. 2009) models that capture subject-specific anatomy and neural activity patterns, the relative accuracy of these various non-tractography or non-subject-specific proxy measures of fibre length is an important practical question. Similarly, a question that is certain to receive growing attention in the coming decade is how the `new breed' of MRI-based tissue microstructure metrics might contribute to this enterprise. Recent developments in structural MR imaging are making measurements of both axon diameters (Assaf et al., 2006, 2007, 2008; Alexander et al., 2010), myelin thickness (Stikov et al., 2011), myelin dystrophy (Avram et al., 2010). Whether these developments play a peripheral or a central role in future models of human brain dynamics will be a function of the precision of the measurements and the degree of precision required in the modelling process.
+
+
+%$\subsection{Present studies}
+
+
+%The aim of the present study was to evaluate systematically the accuracy and potential sources of variability involved in both current uses of tractography and potential future uses of microstructure imaging for anatomically-informed models of neural dynamics.
+
+% We used linear uncertainty propagation techniques to assess the extent to which accurate knowledge of fibre length, diameter distribution, and myelin thickness contribute to accurate estimates of CDDs.  For this I drew on the results from a number of histological and neuroimaging sources. 
+
+% Tract length measures are important for models of spatially distant interacting neuronal populations that incorporate axonal conduction delays. The reason for assessing the accuracy of the various fibre length approximations described in the previous section is that this directly affects the precision of conduction delay estimates based on these measures. However, track length is not the sole source of uncertainty in these delay estimates: myelin thickness, proportion of myelinated vs.~unmyelinated fibres, and the distributions of myelinated and unmyelinated diameters are all known with varying degrees of uncertainty, and varying levels of possibly for improved measurement accuracy. I
+
+%n order to properly quantify the contribution of uncertainties in each of these quantities to the total uncertainty in
+%conduction delay estimates, I conducted a series of formal uncertainty
+%evaluations, in accordance with the rules and guidelines set out by the
+%Joint Committee for Guides in Metrology (2008).
+
+
+\section{Methods}
+
+\subsection{Uncertainty Evaluation}
+
+
+In order to properly quantify the contribution of various sources of uncertainty in the CDD model outlined above, we conducted a series of formal uncertainty evaluations, in accordance with the rules and guidelines set out by the Joint Committee for Guides in Metrology (2008). An uncertainty evaluation begins by defining a function $f$, the \textit{measurement model}, that relates the \textit{measurand} (quantity of interest or outcome variable) $Y$ to the input quantities $X_{i}$; i.e. $Y = f(x_{1},...x_{n})$. Note that in our case the measurement model does not refer to the MRI microstructure or microscopy measurements process, but rather the computation of the CDD and derivative quantities given estimates of the various parameters discussed in the previous section. Once the measurement model is specified,
+an uncertainty evaluation proceeds by obtaining expectations of the
+probability distributions on the input quantities $X=X_{1}...,X_{N}$,
+and the \emph{standard uncertainty}, or error, in those estimates. Expectations of the measurand $Y$ are then calculated straightforwardly from the measurement model and the expectations of $X$. The critical
+part of the evaluation procedure is calculation of the standard
+uncertainty of $Y$, which uses the mathematical technique of \emph{uncertainty} or \emph{error propagation}. For linear models this essentially consists of a weighted combination of the uncertainties of $X$, correcting for non-independence between inputs using covariance terms. Depending on the complexity of the model, this can be done using
+analytically exact methods, analytic approximations, or sampling techniques such as Markov Chain Monte Carlo. The measurement models specified here were simple enough for an exact approach, which was implemented with custom error propagation routines modified from Rocklin et al. (\citeyearNP{rocklin2017symbolic}), using the python symbolic computing library \textit{sympy} \cite{meurer2017sympy}. The uncertainty evaluation procedure concludes by summarizing the results of uncertainty propagation. In addition to the standard uncertainty in $Y$, the model is summarized by the \emph{fractional} or \emph{relative uncertainty} $E/S$ (measurement of uncertainty divided by measured value) and \emph{expanded uncertainty} $FU=S/C$, which is the standard uncertainty multiplied by a coverage factor (an interval over which the majority of potential values of the measurand reside). Finally, \emph{sensitivity coefficients} $s_{1}...,s_{N}$ can be derived for each variable $X_{i}$ in the measurement model as the first order partial derivatives of $f$ with respect to $X_{i}$. These quantify the amount of influence that uncertainty in that variable has on the final estimate of the measurand.
+
+
+
+\subsection{Measurement Models}
+
+\subsubsection*{\textit{Model 1: Myelinated fibre delay distribution parameters}}
+
+For the first set of uncertainty evaluations we define the measurand to be the myelinated fibres CDD scale parameter $\theta_{\Delta_m}$. Following eqs. 8-10, the measurement model is therefore given by $f_{1} = \theta_{\Delta_m} = L^{-1} g^{-1} \theta_{D_m}$. This provides a
+`holistic' quantification of uncertainty in the entire CDD, since together with the shape parameter $k_{m}$ (which, conditional on $\theta_{m}$, has no additional uncertainty; see below) it defines the probability weighting of any delay lying within the support of $\Delta_{m}$. 
+
+
+\subsubsection*{\textit{Model 2: Expected value of myelinated fibre delay distribution}}
+
+Whilst $f_{1}$ provides an elegant and simple measurement model, it suffers from the problems that a) it is in units that have no direct physical or physiological interpretation, and b) the uncertainties propagated up from the model parameters are spread over the entire distribution in a somewhat unintuitive fashion. We therefore chose as the second measurement model the expected value or mean of the myelinated fibre CDD, as given by eq. 11: $f_2 = E_{\Delta_m} = \frac{k}{1-  k^{-1} (L^{-1} g^{-1} \theta_{D_m} - 1)}$. This is perhaps the most directly useful delay variable considered in this paper, as the overwhelming majority of modelling studies examining the effects of conduction delays use only a single delay for the connection between a given pair of brain regions, rather than multiple delays or full delay distributions. The use of a single delay can be understood as an approximation of the full delay distribution by its average (mean) or most common value (mode). We return to the issue of single vs. multiple/distributed delays in the discussion. 
+
+%Range of values over which to vary delays over which microstructure-constrained delays may be varied?
+
+
+\subsubsection*{\textit{Model 3: Expected value of mixed myelinated + unmyelinated delay distribution}}
+
+%The first and second measurement models are based directly on eqs. 8-10, and use as measurands  $\theta_{{D_m}}$ and $\mu_{D_{m}}$, respectively. 
+
+%Model 1 therefore quantifies, in a holistic fashion, uncertainty in the overall shape of the CDD. Model 2, in contrast, focuses on the expectation or central tendency of the CDD. This can be understood as giving a single, representative number for the conduction delay of a given fibre pathway, which is commonly done for the sake of simplification in modelling studies, 
+
+
+%The first measurement model defines the measurand to be the myelinated fibres delay distribution ($\Delta_{m}$) scale parameter $\theta_{m} '$, making the measurement model $f_{1} = \theta_{m} ' = \frac{Lg\theta_{m}}{c_{m}}$. 
+
+
+%I consider
+%here two sets of measurement models based on the CDD concept discussed above. 
+
+%In that chapter the myelinated and unmyelinated fibre delay distributions $\Delta_{m}$ and $\Delta_{u}$ were computed by sampling from gamma distributions of axon diameters and applying a simple transform to compute the delay for a given axon given its diameter. These were then pooled with relative proportions of samples $p_{m}$ and $p_{u} = 1-p_{m}$ to give a sampling-based mixture distribution $\Delta_{m+u}$. Here I use an alternative parameterization of the delay distributions, which uses an analytic rather than a sampling-based procedure for the computation of $\Delta_{m}$ and $\Delta_{u}$, and so is more amenable to analysis using linear error propagation techniques. The key difference is that the expressions for conductions for delays as a function of diameter $d$ are applied directly to the scale parameter of the fibre diameter distributions. The result is a mixture of \emph{inverse} gamma
+%distributions; $\Delta_{m+u} = p_{m} \Gamma^{-1}(k_{m},\frac{Lg\theta_{m}}{c_{m}}) + p_{u} \Gamma^{-1}(k_{u}\frac{L}{\theta_{u}c_{u}})$.
+
+Unmyelinated fibres are largely ignored in the microscopy and emerging neuroimaging literature on ADDs, primarily for the understandable reason that they are extremely difficult to measure from accurately due to their small size (mostly <1$\mu$m), which makes them effectively invisible to both light microscopy and MRI microstructure imaging.  Because electron microscopy is impossible in post-mortem human tissue due to the need for toxic tracer injections before death, estimates of unmyelinated fibre densities and diameters need to be extrapolated from studies in non-human primates such as the macaque. Importantly, such studies have observed as high as 40\% of axons to be unmyelinated in some brain locations \shortcite{bowley2010age}. A 'complete' CDD would therefore include contributions from both myelinated and unmyelinated fibres, and it is immediately evident that this could have a substantially longer tail than the CDD for myelinated fibres alone, given the substantially slower conduction velocities of unmyelinated fibers. We therefore included as our third measurement model the expectation of the mixed myelinated+unmyelinated fibre delay distribution; $f_{3} = E_{\Delta_{m+u}} = E(p_m  \mathbf{\Delta}_{m} + (1-p_m) \mathbf{\Delta}_{u}) $, where $p_m$ is the proportion of fibres in the fascicle that are unmyelinated. 
+
+\textit{++TO DO: define $\Delta_u$}
+
+
+% NEED TO DEFINE E_D_M+U...
+
+
+%The procedure detailed above provides a general framework for assessing how uncertainty in length, g-ratio, and axon diameter distribution parameters impact on the precision on conduction delay estimates. As is normally the case with scientific measurements, these uncertainties have multiple origins. In the present case these can be separated first and foremost into within-subject variability, between-subject variability, and measurement error. The importance of the former depends on the magnitude of the latter: measurements are accurate only insofar as they increase the confidence in the estimate of a quantity beyond that of an estimate based only on the population variation. For the case of length, both the tractography and the T1 proxy measurements have relatively high accuracy, and so we can focus on the difference in precision between the two. For $g$ and $\theta_{m}$, the accuracy of the measurement techniques is lower, and so we are concerned more with the comparison of measurement vs.~no measurement at all. Parallelling this, the pragmatic reality is that neuroimaging studies at present collect only T1-weighted images as standard. Diffusion-weighed images for tractography are reasonably common, but the multiple b-value diffusion-weighted sequences necessary for axon diameter imaging, and the magnetization transfer sequences necessary for g-ratio imaging, remain highly specialist technologies. Thus the question for noninvasive estimates of length is one of `which', whilst for g-ratio and axon diameters is still one of `whether'. The uncertainty values compared in this study were chosen to reflect this situation.
+
+
+\subsection{Parameter values}
+
+The three measurement models $f_{1}$, $f_{2}$, and $f_{3}$ share input parameters
+$L$, $\theta_{m}$, $k_{m}$, $g$, and $c_{m}$, with $f_{3}$ additionally
+having parameters $\theta_{u}$, $k_{u}$, and $p_{m}$. None of these may
+be said to be known perfectly and entirely without uncertainty. We restrict our focus in this study to uncertainty in parameters whose precision may be actually or potentially be improvable in the near future using noninvasive imaging: $L$, $g$, $\theta_{m}$, $p_{m}$. Each of these are considered with and without measurement uncertainty, and error propagation calculations were made for all permutations of zero and non-zero uncertainties in these parameters. The remaining parameters were set as constants. For all parameters apart from tract length $L$ (see below), zero uncertainty level should be understood as an idealization that is useful in understanding their respective contributions to the combined standard uncertainty. Non-zero levels were chosen to reflect the likely range of values which the parameter may take, considering both inter-regional and inter-subject variation.
+
+
+\subsubsection*{\textit{Tract Length}}
+
+The lengths of white matter fibre tracts vary widely in humans, from around 10mm to as high as 200mm in large brains. However, in contrast to the other model parameters specifying ADDs and myelination, it is not necessary to incorporate this full range of variation into the measurement model, because in practice additional information is available that substantially reduces uncertainty about tract length. In particular, diffusion MRI tractography allows fairly unambiguous measurement of tract lengths to a high degree of accuracy. Tract lengths can be also approximated to fairly high precision (10mm error) without use of tractography, simply using using Euclidean distance. It should be noted however that, depending on how the brain regions for which delay is being estimated are defined, there may be a genuine distribution of tract lengths associated with a given anatomical connection. Naturally, the width of this distribution will be larger when larger regions are used. We therefore set $L$ = 160mm+/- 20mm.
+
+%uncertainty in length to X, for reason X (Euclidean distance approximation / length dispersion).
+
+
+\subsubsection*{\textit{Axon diameters}}
+
+Uncertainties for $\theta_{m}$ were based on the data reported in Aboitiz et al. (\citeyearNP{aboitiz1992fiber}). These authors used light microscopy to examine the five main segments of the corpus callosum (genu, anterior body, mid body, posterior body, and splenium). They presented the diameter distributions of each segment as histograms (figure 4 of that paper). To identify the physiological range of $k_{m}$ and $\theta_{m}$, the parameters of five gamma distributions were fitted to the histogram data presented in that paper (figure 4.4, left panel). This yielded a range of 2-5 for $\theta_{m}$, and so in this study $\theta_{m}$ was set to lie in the middle of this range, with an uncertainty that spans the majority of this range; 3.5+/-2. Because $\theta_{m}$ and $k_{m}$ are highly correlated, the appropriate value of $k_{m}$ was selected by regressing $k_{m}$ onto the $\theta_{m}$ (figure 3, right panel), and
+using the regression model to specify the corresponding $k_{m}$ for a given $\theta_{m}$. Thus, for example, $\theta_m$=3.5 specified $k_m$=4.12.
+
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_666_1.png}% This is a *.jpg file
+\end{center}
+\caption[\emph{Diameter distribution gamma parameters. }]{\emph{Diameter distribution gamma parameters. }Left panel: Gamma distributions fitted to the axon diameter histograms of Aboitiz et al. (1992), 
+figure 4. The scale and shape parameters are listed after the corpus callosum region name 
+in the figure legend. Right panel: regression of the scale and shape parameters in top panel. 
+Red markers indicate the parameters from the five distributions shown in top panel;
+the regression line and equation were fitted to these data. Blue markers indicate the 
+three parameter pairs used in this study, sampled at three points evenly along the x axis, with the regression equation used to define the corresponding y values.  Uncertainty propagation analyses in this study chose a value for the diameter distribution  scale parameter in the mid-point of its range (0.35), with uncertainties of 0.2.}\label{fig:4}
+\end{figure}
+
+
+
+\subsubsection*{\textit{G-ratio}}
+
+Whilst g-ratios have been reported as low as 0.2 and as high as 0.8, the
+remarkable consistency of this quantity around 0.6-0.7 has been the
+subject of several theoretical research papers (Rushton, 1951; Chomiak
+\& Hu 2009; Paus \& Toro, 2009; Caminiti et al., 2009). This parameter
+was therefore assigned a modest level of uncertainty: $g$ = 0.7 $_{+/-}$
+0.1. 
+
+\subsubsection*{\textit{Proportion of myelinated vs. unmyelinated fibres}}
+
+Uncertainty in the proportion of myelinated fibres was
+also set to a modest level of $p_{m}$ = 0.8 $_{+/-}$ 0.1, which covers
+the majority of conventionally cited proportions of myelinated to
+unmyelinated in non-diseased brains  \shortcite{bowley2010age}.
+
+ 
+\subsection{Software note}
+
+All code and data used in this study is freely available at \url{https://github.com/JohnGriffiths/DelaysMicrostructureUncertaintyEvaluation}
+
+
+
+
+
+
+
+\section{Results}
+
+
+\subsection{Examples of delay distribution estimates}
+
+The key parameters of interest in the present study are those that are actually or potentially measurable with noninvasive imaging: tract or axon length, diameter distribution, and g-ratio. 
+
+We first present some demonstrative examples 
+examples of CDDs and their arithmetic moments under variation of these parameters,
+as computed from Eqs. 8-11. 
+
+\textit{++Comments on these...}
+% ('...for reader's intuition' ? )
+
+
+\begin{figure}[h!]
+\begin{center}
+%\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_711_1.png}% This is a *.jpg file
+\end{center}
+\begin{center}
+%\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_711_2.png}% This is a *.jpg file
+\end{center}
+\caption[\emph{Examples of conduction delay distributions}]{Show some CDDs as a function of length, g, theta. Maybe with panels, maybe on one plot. Also have a different plot showing means / modes for same variation. find extreme values. }
+\label{fig:5}
+\end{figure}
+
+
+
+
+
+
+\subsection{Relative contributions of length, diameter, and myelin thickness to precision of conduction delay estimates}
+
+The uncertainty evaluation technique outlined above provides a framework for assessing quantitatively and comprehensively the sensitivity to input parameters demonstrated visually and intuitively in the previous section. 
+
+%Figure X shows sensitivity coefficients measurement models f1 and f2. 
+%Figure X shows combined standard uncertainties for measurement models f1 and f2.
+% (what does this look like?)
+%Sensitivity coefficients for g and theta are higher than for L. 
+% have 2D plot: uncertainty in outcome as a function of uncertainty level of theta and g (assume L is fixed)
+% - g vs. theta which contributes more...
+% - pdf variability plot for theta model
+
+
+\emph{Uncertainty evaluation results for model $f_1$.}
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_711_1.png}% This is a *.jpg file
+\end{center}
+\begin{center}
+\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_711_2.png}% This is a *.jpg file
+\end{center}
+
+\caption[\emph{Uncertainty evaluation results for model $f_1$.}]. Uncertainty evaluation results for model $f_1$. The step change after the first four points is due to the addition of uncertainty in $\theta_{D_m}$. Bottom panel shows sensitivity coefficients for the three variables with nonzero uncertainty.
+\end{figure}
+
+%The level of uncertainty in the final result is $\textit$ - around time more sensitive to the level of uncertainty in g ratio than in $\( \theta_{m} \)$, and ~15 times more sensitive to the level of uncertainty in g ratio than in length. 
+%} \label{fig:5}
+%\end{figure}
+
+%the myelinated fibre delay distribution shape parameter $\theta_{m} '$ mode of the myelinated+unmyelinated delay distribution $E(\Delta_{m+u}$) are shown in figures 4.5 and 4.6, respectively. 
+
+%It should also be borne in mind that the use of a gamma form for the distribution of axon diameters is an approximation. Skewed- or log-normal distributions would also have the adequate form, or alternatively a Gaussian fit to the logarithm of axon diameters (c.f. Marner et al. \citeyearNP{marner2003marked}).
+
+Results from uncertainty evaluations for model $f_1$ and model $f_2$ are shown in Figures 4 and 5, respectively. In these figures, combined standard uncertainties for different levels of uncertainty in the input parameters are presented as symmetric error bars above and below the expected value, which was always the same. These plots are ordered left-to-right from zero to maximum uncertainty. The most prominent feature of Figure 4 is the step-change that results from the addition of uncertainty in the myelinated fibres diameter
+parameter, $\theta_{D_m}$ (compare data points 1-4 vs datapoints 5-8). Uncertainty in $L$ and $g$ each contribute \textasciitilde{}0.35 to the uncertainty in the measurand $\theta_{\Delta_m}$, whereas uncertainty in $\theta_{D_m}$ contributes 10 times this amount, so that the final estimate of $\theta_{\Delta_m}$ with maximal uncertainty is 4.1+/-3.0856. Accurate knowledge of the distribution of myelinated fibre diameters would therefore appear to be significantly more important than knowledge of fibre length or g-ratios in this case.
+
+As the sensitivity coefficients in Figure 4 show, the computation of $\theta_{\Delta_m}$ is actually more sensitive to variation in $g$ than in $\theta_{D_m}$. However because the value of $g$ is generally observed to be quite stable \shortcite{rushton1951a}, it was assigned lower uncertainty in this analysis. The dominance of $\theta_{D_m}$ in Figure 4 is due to its relatively higher uncertainty, which was chosen based on the range of diameter distributions observed in post-mortem corpus callosum samples. The contribution of $L$ to the combined uncertainty is roughly equivalent to that of $g$, despite having considerably lower sensitivity coefficients. Nevertheless, given the order of magnitude difference in contribution to the combined uncertainty compared to $\theta_{D_m}$, the improvement in precision of using tractography vs. using a length proxy such as Euclidean distance with \textasciitilde{}10mm error appears to be negligible.
+
+
+
+\subsection{Myelinated/Unmyelinated fibre ratio dominates in combined models}
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_726_1.png}% This is a *.jpg file
+\end{center}
+\caption[\emph{Sensitivity coefficients for $E(\Delta_{m+u})$.}]{\emph{Sensitivity coefficients for $E(\Delta_{m+u})$.}
+Note that sensitivity coefficients are plotted on a log scale in this figure, due to the difference in magnitude between the coefficients for \( p_{m} \) and the other three variables. Here, the level of uncertainty in \( E(\Delta_{m+u} ) \) is roughly 60 times more sensitive to the level of uncertainty in \(p_{m}\) than in g-ratio, and roughly 500 times more sensitive to the level of uncertainty in \(p_{m}\) than in length. } \label{fig:7}
+\end{figure}
+
+
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{Chapters_1_2_3_4_5_6_7_724_1.png}% This is a *.jpg file
+\end{center}
+\caption[\emph{Combined standard uncertainties for $E(\Delta_{m+u})$ .}]{\emph{Combined standard uncertainties for $E(\Delta_{m+u})$ .}
+Shown are combined standard uncertainties in \( E(\Delta_{m+u}) \), and in top panel of Figure 4. A step change in combined standard uncertainty is seen when 
+uncertainty in the mixing proportion \( p_{m} \) is introduced.} \label{fig:6}
+\end{figure}
+
+
+
+
+
+%   \begin{figure}[htbp!]
+%centering
+
+
+
+
+    
+%   \begin{center}
+%   \adjustimage{max size={0.99\linewidth}{0.99\paperheight}}{Figures/Chapters_1_2_3_4_5_6_7_711_1.png}
+%   \end{center}
+    
+    
+%   \begin{center}
+%   \adjustimage{max size={0.99\linewidth}{0.99\paperheight}}{Figures/Chapters_1_2_3_4_5_6_7_711_2.png}
+%   \end{center}
+    
+    
+%\caption[\emph{Uncertainty evaluation results for $\theta_{m}'$ .}]{\emph{Uncertainty evaluation results for $\theta_{m}'$ .}
+%Top panel shows combined standard uncertainties. The step change after the first four points 
+%is due to the addition of uncertainty in \( \theta_{m} \). 
+%Bottom panel shows sensitivity coefficients for the three variables with nonzero uncertainty. 
+%The level of uncertainty in the final result is ~3 times more sensitive to the level of uncertainty in 
+%in g ratio than in \( \theta_{m} \), and ~15 times more sensitive to the level of uncertainty 
+%in g ratio than in length. 
+%}
+%\label{fig:\emph{Uncertainty evaluation results for $\theta_{m}'$ .}}
+%\end{figure}
+
+Combined standard uncertainties and sensitivity coefficients the from second uncertainty evaluation for the expectation of the mixed delay distribution, $E(\Delta_{m+u})$, are shown in figures 5 and 6, respectively. In this analysis, the parameters of the unmyelinated fibre population were considered constant, and so the only parameter that differed from the results for $\theta_{\Delta_m}$ presented above was the proportion of myelinated fibres, $p_{m}$. Interestingly, it is this parameter that completely dominates both the standard uncertainty and sensitivity coefficient results for $E(\Delta_{m+u})$. The y axis in Figure 5 is plotted on a logarithmic scale due to the order of magnitude differences between the sensitivity coefficients of $p_{m}$ (105.6) and of $L$ (0.2), $\theta_{D_m}$ (0.4), and $g$ (1.8). This dominance of $p_{m}$ is also evident in the step-change in combined uncertainties (first 8 vs.  second 8 data points in Figure 6), similar to that seen for $\theta_{D_m}$ in Figure 4. Introducing a modest level of uncertainty in $p_{m}$ increases the uncertainty in $E(\Delta_{m+u})$ from \textasciitilde{}22+/-2ms to \textasciitilde{}22+/- 10ms.
+
+
+
+
+
+
+
+
+
+
+%\begin{landscape}
+
+%\vspace{30 mm}
+                
+
+%    \begin{figure}[htbp!]
+%centering
+
+
+%   \begin{center}
+%   \adjustimage{max size={0.99\linewidth}{0.99\paperheight}}{Figures/Chapters_1_2_3_4_5_6_7_724_1.png}
+%   \end{center}
+    
+%\caption[\emph{Combined standard uncertainties for $E(\Delta_{m+u})$ .}]{\emph{Combined standard uncertainties for $E(\Delta_{m+u})$ .}
+%Shown are combined standard uncertainties in \( E(\Delta_{m+u}) \), 
+%ad in top panel of figure 4.5. A step change in combined standard uncertainty is seen when 
+%uncertainty in the mixing proportion \( p_{m} \) is introduced. 
+%}
+%\label{fig:\emph{Combined standard uncertainties for $E(\Delta_{m+u})$ .}}
+%\end{figure}
+
+    
+%                \end{landscape}
+                
+
+%    \begin{figure}[htbp!]
+%centering
+
+   
+%   \begin{center}
+%   \adjustimage{max size={0.99\linewidth}{0.99\paperheight}}{Figures/Chapters_1_2_3_4_5_6_7_726_1.png}
+%   \end{center}
+    
+    
+%\caption[\emph{Sensitivity coefficients for $E(\Delta_{m+u})$.}]{\emph{Sensitivity coefficients for $E(\Delta_{m+u})$.}
+%Note that sensitivity coefficients are plotted on a log scale in this figure, due to the difference 
+%in magnitude between the coefficients for \( p_{m} \) and the other three variables. Here, the level 
+%of uncertainty in \( E(\Delta_{m+u} ) \) is roughly 60 times more sensitive to the level of 
+%uncertainty in \(p_{m}\) than in g-ratio, and roughly 500 times more sensitive to the level of 
+%uncertainty in \(p_{m}\) than in length. 
+%}
+%\label{fig:\emph{Sensitivity coefficients for $E(\Delta_{m+u})$.}}
+%\end{figure}
+
+    
+
+
+
+
+
+\section{Discussion}
+
+% 1. what we did
+% 2. develop points
+% 3. relevance to modeling
+%    - fix delays
+%    - significance of delay distribution (c.f. buzaki paper and other stuff you know)
+%    - computational aspects
+% 4. relevance to clinical
+%    - ageing, MS, etc.; cognitive /  neural slowing 
+%    - synchrony 
+%    - (move some stuff from intro to here?)
+
+% 5. caveats
+%    - didn't consider coefficient
+%    - maybe more correlations between variables
+%    - don't know diameter distribution for unmyelinated
+%    - not clear what significance of unmyelinated is and how it should be incorporated
+%    - different distributions could be used
+%    - often modelling studies sweep through delays 
+
+% 6. future work
+%     - more basic anatomical work needed to improve priors etc. 
+%     - develop full atlases of delays from whole brain axcaliber data etc. 
+
+
+
+% (For discussion? Recent work has suggested that other probability distributions such as X and Y provide a superior fit than the gamma distribution;  the methods discussed in the following )
+
+
+The aim of present study was to assess the extent to which anatomically-based conduction delay estimates for long-range axonal fibre bundles are affected by uncertainty in their macrostructural and microstructural properties. In the interests of tractability and applicability we restricted our investigation to a relatively small set of variables that are known to have the most salient influence on the speed of axonal transmission, and that also present the possibility of measurement using emerging noninvasive imaging techniques. We anticipate that future work building on the framework developed here shall be both more expansive - through use of additional macro- and microstructural detail - and more focused, for example by examining more closely the influence of precision in delay parameterization for specific physiological and computational models, and in specific clinical contexts. In the following we briefly summarize our key results, highlight some important caveats, and offer some observations and suggestions as to how such future studies may proceed.
+
+
+\subsection{Summary of key findings}
+
+The central result of this paper is that is that, when considering myelinated fibres only, uncertainty in tissue microstructure properties (ADD parameters and g-ratios) contributes more to anatomically-based conduction delay estimates than uncertainty in axon or tract length. [ Another sentence here with specific numbers for this statement]. We emphasize that this conclusion is predicated on the assumptions we made regarding the uncertainty in length estimates; namely that it is very low. Note that this is not a statement about the role of length per se in conduction delays: clearly, a 180mm fibre bundle will have a substantially longer delays than a 20mm fibre bundle (see e.g. figure X). However, in the usual case where detailed maps of individual subjects' cortical geometry are readily available (through e.g. T1-weighted MRI scans), and particularly when diffusion-weighted data is available for tractography reconstructions, the degree of \textit{uncertainty} in tract length is not very high. We selected a 10mm uncertainty level heuristically based on general knowledge of white matter neuroanatomy in general and of tractography-based length estimates in particular. This is probably an overly-conservative estimate; it seems likely that properly applied multivariate and machine learning techniques should be capable of predicting tract lengths from T1-derived variables such as head size and shape with substantially greater accuracy. 
+
+Secondly, we found a greater contribution to overall uncertainty from g-ratio than from the ADD shape parameter. [ Another sentence on details of this ]. This is perhaps surprising. Currently noninvasive g-ratio estimation using magnetization transfer imaging is less well-developed than ADD distribution estimation using AxCaliber. 
+
+Third, we examined the case of CDDs resulting from mixtures of myelinated and unmyelinated fibres. Interestingly, this 'full CDD' case, as opposed to the partial CDDs provided by myelinated fibres only, has been largely ignored in computational studies to date investigating the physiological and computational significance of CDDs. similarly, in the present study we have chosen to focus on and emphasize the myelinated-only measurement models. The reasons for this are threefold: i) the mixed distribution involved additional quantities for which less information is available (mixing fraction and unmyelinated fibre ADD and conduction properties), ii) the role and significance of unmyelinated fibres is unclear, and arguably their influence is subtle and negligible, and iii) it is unclear how these properties might be measured with the noninvasive techniques about which the present study is primarily concerned with. Nevertheless, we suggest that greater consideration should be given to the potential role of unmyelinated fibres in CDDs and related phenomena, a proposal which is borne out by the results of our analyses. 
+
+In the uncertainty evaluations using measurement model $f_3$, the propertion of myelinated vs. unmyelinated fibres had a dramatically higher influence on the CDD than any of the other variables considered. This is not surprising given the difference in the individual CDDs of the two fibre populations. We also emphasize that the outcome variable studied - expected value of $\Delta_{m+u}$ - is a rather blunt object for describing bimodal distributions of this kind. It is nevertheless highly informative in this case. 
+
+
+\subsection{Implications for computational models}
+
+% we focus on connectomics models
+
+The anatomically-based CDD estimates discussed in this paper may be useful for a variety of clinical and research contexts. Our primary interest is for constraining macro-scale neural mass models. An exhaustive analysis of how CDD estimates may be useful in this context is beyond the scope of the present paper, but we may make some initial observations. Within the emerging paradigm in large-scale brain network modelling laid down by Ghosh et al. \citeyear{ghosh2008noise}, Deco et al. \citeyear{deco2009key}, Ritter et al. (2013), and others, it is typical to use a single conduction delay per connection, and to specify the value of that delay from fibre lengths from diffusion MR tractography, and a single global conduction velocity. The use of a single delay is a simplification of the CDD, and is best understood as representing its mean/mode. Thus measurement model $f_2$ is most relevant to such approaches. There are two chief ways in which microstructure-based delay estimation may prove useful for such studies. The first is as a constraint. It is common in modelling studies to perform \textit{parameter space exploration}, where conduction velocity and other parameters such as global coupling are varied throughout their entire range, and scalar summary metrics of the system's behaviour are plotted, for example as 2D heatmaps. A typical observation in PSE investigations is that conduction velocity changes stability surface but not overall structure (Knock et al. 2009; Jirsa book chapter). Delays also affect, and potentially create, oscillations; although how this interaction plays out is highly dependent on the specific model neural models used. Neural mass models generating strong local oscillations (e.g. alpha rhythms; Kunze et al. 2016) are less affected so by varying conduction velocity than models where oscillations emerge from large-scale circuits. For example, in the Robinson thalamocortical (refs), loop delay is v important. 
+Something about delays in lefebvre models...
+In principle, fixing conduction velocity from microstructure variables will allow this parameter to be fixed, thus allowing more flexibility in exploring and estimating other important parameters such as global gains and local excitatory-inhibitory interactions. Relatedly, some modeling approaches look to estimate conduction delays from neurophysiology data (Robinson model papers; DCM papers). This can be highly problematic (David refs). Microstructure data would be helpful here in constraining, and/or fixing, delay parameters. 
+A second potentially important contribution of microstructure-estimated CDDs is that they have the potential to modify substantially the relative delays of network connections. In PSEs where conduction velocity is varied globally, the delays of each network connection may all increase and decrease, but their relative values (determined by tract lengths) remains constant. An important empirical question, for which there is currently very little relevant data in humans, is how much this relative delay structure, imposed essentially by inter-regional distances, is modified by per-tract differences in axonal calibers. 
+
+A number of authors have studied neural mass and field models with distributed delays (e.g. Roberts \& Robinson 2009; Bojak \& Liley \citeyearNP{bojak2010axonal}; Hutt et al. 2006). Some sentences on this...
+
+
+% the implicit assumption of using a single delay is that that is the most common delay or something like that
+% ...which is what we're characterizing with the Expectation estimates
+
+% 
+
+
+\subsection{Implications for white matter degeneration}
+
+In this study we have, for practical purposes, restricted our attention to non-disease questions of variability within the healthy population, and questions of measurement precision and the general relationship between delays and white matter microstructure in human and non-human brains. Naturally however, CDDs and conduction delays in general have major potential as a clinical biomarker, and to understand the implications of white matter pathology. The effect of disease-related loss of axons on the CDD depends on the whether the loss of axons is felt uniformly across the population, or whether it targets for example large fibres (ref) or small fibres (ref). If the effect is uniform, then the CDD should not change. In contrast, if there is specific loss to large fibres (above the mean; > X um), then it the effect would be to increase delay. If small, and/or unmyelinated fibres are targeted selectively, then (perhaps paradoxically) the result would be faster conduction on average. Reduction in myelin thickness would instead be expected to result in global slowing. There are multiple additional factors. However myelin thinning per se may not be a particularly common pathology. Myelin blistering, unwrapping, and then also remyelination (which also have been hypothesized to increase delays due to smaller internodes) may also have important effects on the delay structure of a given fibre bundle. The microstructure-based delay estimation framework used here would allow at least some of these various effects to be brought together (e.g. myelin and axonal changes), and also allows their importance to be assessed in relation to fibre length (slowing of long fibres is more significant than slowing of short fibres).  These changes may have influences on  neural synchrony, cognitive function, and coding.
+
+
+
+In conclusion, we have presented an approach to characterizing and quantifying uncertainty in microstructure-based conduction delay estimates. Noninvasive microstructure imaging is a new and rapidly developing field, that has considerable potential for improving our understanding of brain dynamics in health and disease through both macroscopic and microscopic neurophysiological models. We anticipate that the future work shall build on and improve the estimates and recommendations made here, in concert with improvements in technology and understanding of brain organization in human, animal, and in-silico neural systems. 
+
+
+
+
+
+
+%Furthermore, as noted above, the distribution of tract lengths for a given connection places an upper limit on the potential precision of summary statistics such as expected values when more coarse-grained parcellations are used.  distribution mean that lengths cannot be resolved. 
+% tttttmpestimates such as the expected valueo f a delay sitribution. 
+% delay estimates.
+
+%Whilst this information has clear direct applications in models of neurodegenerative changes such as those occuring in advanced age, the primary intention of the evaluations in this chapter was to clarify what kinds of anatomical information are most useful for researchers and for the field as a whole to invest in acquiring (whether from imaging or from other sources), and to what degree of accuracy. A comprehensive assessment of this kind of question would consider many more factors and models than the simple delay distribution models described here. The approach described here could however easily be adapted, modified, or extended to address a broader set of questions. As such, it represents a generic tool for prospectively evaluating the utility of emerging imaging technologies in modelling research.
+
+
+
+%\subsection{T1 proxy measures}
+
+
+
+%In the comparison of non-tractography tract length estimators, a regression model based on Euclidean distances between regions was marginally superior to the more complex inverse warping approach, with prediction errors of \textasciitilde{}10mm. Note however that neither of these techniques were developed and optimized here with the full rigour of a pure methodological study, as that was not the purpose of this investigation. The aim was rather to identify the likely lower bounds on the degree of accuracy attainable without using tractography directly. The length prediction accuracy could most likely be improved considerably by both a more sophisticated predictive model and more sophisticated procedure for construction and inverse warping of atlas structures. The greatest improvements in the inverse-normalization procedure are likely to come from improved registration methods. Variants could explore different registration approaches, such as direct registration and warping of streamlines (e.g. Barrick \& Clark, 2004; Lawes et al., 2008), diffeomorphic methods, or more widely used volumetric methods (e.g. Yendiki et al., 2011; Clayden et al., 2011). The method described by Bojak et al. (2011), which identifies the shortest geodestic path betwen two ROIs within the white matter volume of a T1-weighted image, should also be considered in future comparisons. It would however be preferable to retain the methodological simplicity of the Euclidean distance regression approach, if possible. Future efforts may therefore be most efficiently spent constructing a large, high quality tractography training dataset, together with a more principled and systematic deployment of modern machine learning techniques.
+
+
+
+%\subsection{Caveats}
+
+%The conclusions from the uncertainty evaluation of this study must be understood with a number of caveats. Firstly, the simple phenomenological model for conduction delays ignores many of the details of real axonal conduction. The validity of a linear diameter-velocity relationship is not normally disputed however. The specific choices of the various components of the model may be more controversial. Researchers have disagreed in the past over the precise value of the constant of proportionality $c_{m}$ (see discussion in Bojak et al. \citeyearNP{bojak2010axonal}). Our choice of a gamma distribution function for the myelinated fibre diamters is not controversial, although the parametric form and moments of the unmyelinated fibre population were necessarily more speculative. Similarly, many of the uncertainties on parameter values specified in this study involved varying degrees of extrapoloation from published observations. This is particularly important, as the results of uncertainty evaluations are of course influenced considerably by the uncertainty levels specified. For example, the decision to define uncertainty levels in myelinated axon diameter distributions based on the range of values observed in figure 4.4 may be disputed. It may be preferred to instead treat these probabilities discretely, i.e. assuming that the `true' distribution for a given bundle must be one of the five, and assigning uncertainties according to relative confidences in each value. The measurement models used here may also be improved through more sophisticated specification of priors, and of the covariances between $g$, $D_{m}$, and $L$. The simplifying assumption of a single value for $L$ and $g$, as opposed to a distribution of $g$s and $L$s, could also be relaxed quite easily by increasing the uncertainty in these parameters in accordance with the dispersion of such distributions.
+
+
+
+%\subsection{Relevance to neuroimaging}
+
+
+%Previous studies have considered the computational, metabolic, and evolutionary advantages and implications of the relationship between anatomy and conduction delays. To date these studies have tended to focus on fairly gross differences between species, using ex vivo light and/or electron microscopy data, and small sample sizes. Whether the results of the present study prove useful in this line of research will depend on the tradeoff between the poorer data quality and resolution of imaging compared to microscopy on the one hand, and the benefits of being able to study individual differences and cognitive and clinical associations in humans, potentially with much larger a sample sizes, on the other.
+
+%The groundwork of this study is important for the future work because it helps establish the current and near-future limits on the scope of tissue microstructure-based investigations into the effects of age on conduction delays. This relationship is an interesting one outright, but in the context of the present study it is developed primarily as a methodological tool for studying how disconnection-type scenarios, arising from several co-morbid forms of white matter degeneration (principally: axonal dystrophy, axonal loss, myelin dystrophy, myelin loss, shifted ratios of fast- and slow-conducting or myelinated- and unmyelinated fibres, in some as yet unknown combination), are related to the gradual cognitive decline generally seen in otherwise healthy older adults. Being able to distinguish between these various degenerative processes, and/or to quantify the incidence of each in individuals and groups of individuals, is an important basic science question that has relevance both to ageing per se and to several neurodegenerative diseases. Basic science is the focus here, however. 
+
+%Later chapters in this thesis explore convergence between structural and functional data through the lens of dynamic connectivity and conduction delays.
+
+
+%\subsection{Relevance to white matter disconnection and ageing research}
+
+
+%Unlike the other chapters in this thesis, the studies described here have not been directly aimed at addressing questions relating, to $H_{wm}$, $H_{del}$, or other aspects of ageing or white matter disconnection. Rather, they provide important groundwork for the broader goal of bridging the gaps between brain structure, brain dynamics, and cognition. Precisely what level of microstructure information will be possible to obtain from new neuroimaging methods in the coming years remains unclear, and the analyses described were by design not overly specific on this matter. The general format (and code) for the uncertainty evaluations used here can, and are fully intended to be, adjusted in future studies and applied to specific use-cases and scientific questions. Certainly, in vivo structural measurements of white matter anatomy are envisaged as a key component of the new new physiologically-based disconnection framework advocated in Chapter 1, and developed in Chapter 3. As in all of science, a precise characterization of measurement and modelling uncertainties will be instrumental to progress in this area.
+
+
+
+
+
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.3\textwidth]{frog.jpg}
+%\caption{\label{fig:frog}This frog was uploaded via the project menu.}
+%\end{figure}
+
+%\subsection{How to add Comments}
+
+%Comments can be added to your project by clicking on the comment icon in the toolbar above. % * <john.hammersley@gmail.com> 2016-07-03T09:54:16.211Z:
+%
+% Here's an example comment!
+%
+%To reply to a comment, simply click the reply button in the lower right corner of the comment, and you can %close them when you're done.
+
+%Comments can also be added to the margins of the compiled PDF using the todo command\todo{Here's a comment in %the margin!}, as shown in the example on the right. You can also add inline comments:
+
+%\todo[inline, color=green!40]{This is an inline comment.}
+
+%\subsection{How to add Citations and a References List}
+
+%You can upload a \verb|.bib| file containing your BibTeX entries, created with JabRef; or import your \href{https://www.overleaf.com/blog/184}{Mendeley}, CiteULike or Zotero library as a \verb|.bib| file. You can then cite entries from it, like this: \cite{greenwade93}. Just remember to specify a bibliography style, as well as the filename of the \verb|.bib|.
+
+%You can find a \href{https://www.overleaf.com/help/97-how-to-include-a-bibliography-using-bibtex}{video tutorial here} to learn more about BibTeX.
+
+%We hope you find Overleaf useful, and please let us know if you have any feedback using the help menu above --- or use the contact form at \url{https://www.overleaf.com/contact}!
+
+\bibliographystyle{apacite} % JG_MOD {alpha}
+\bibliography{readcube_export}
+
+\end{document}

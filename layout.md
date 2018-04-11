@@ -16,6 +16,7 @@ nks8q2l36fg.tex
 figures/JohnGriffiths_Esig2
 dl4q93ivbtg.tex
 figures/JohnGriffiths_Esig5
+figures/theta_m_combined_uncertainties
 cpvqhhe7o68.tex
 qblla8god5g.tex
 figures/JohnGriffiths_Esig3

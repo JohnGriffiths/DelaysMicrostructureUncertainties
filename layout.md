@@ -5,8 +5,6 @@ cfvhmjhjpro.tex
 untitled.html
 a5mktq7h9vo.tex
 figures/JohnGriffiths_Esig
-8vu71bctloo.tex
-hleq39u2sso.tex
 u7uj31cn3ao.tex
 sak6qrs20ho.tex
 i7225sa0ts8.tex

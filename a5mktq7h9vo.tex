@@ -6,12 +6,12 @@
 Broadly speaking, conduction delays may be estimated from empirical data in one of four ways, 
   
 \begin{enumerate}
-\item Direct (neural or behavioural) response latency measurements such as ERPs, reaction times, or motor nerve conduction times  \hortcite{reed1991arm,allison1984developmental, marzi1999the,lodhia2017decreased,wishart1995interhemispheric}
+\item Direct (neural or behavioural) response latency measurements such as ERPs, reaction times, or motor nerve conduction times  \cite{reed1991arm,allison1984developmental, marzi1999the,lodhia2017decreased,wishart1995interhemispheric}
 \item Identification of lags, cross-correlations, MVAR model orders; or phase lags \cite{cimponeriu2004estimation,brovelli2004beta}
 
-\item Parameter estimation from multivariate time- or frequency-domain biophysical network models \cite{friston2011dcm,kerr2011modelbased}.
+\item Parameter estimation from multivariate time- or frequency-domain biophysical network models \cite{friston2011dcm, kerr2011modelbased}.
 
-\item Calculation from relevant microstructural variables (axon diameter, myelin thickness, fibre length) \shortcite{caminiti2009evolution,caminiti2013diameter,ringo1994time}
+\item Calculation from relevant microstructural variables (axon diameter, myelin thickness, fibre length) \cite{caminiti2009evolution,caminiti2013diameter,ringo1994time}
 \end{enumerate}
 
 Note that many techniques may fall into one or several of these categories, and will differ in multiple additional ways such as the type of delay being measured (e.g. individual cells; population average; population fastest; etc.) and how the delay is calculated and parametrized in a given model. Categories 1-3 above all operate on neurophysiological or behavioural data and rely on models of varying complexity that utilize timing relationships between measured variables, or relative to a stimulus or motor response, to identify delays. In contrast, category 4 - which shall be our focus in this paper - does not directly use any measurements of neural activity. Rather, it exploits known properties relating delays to the microstructural anatomy of axons, as well as the statistics of the axonal populations that comprise white matter fascicles in the central and peripheral nervous systems. In the following we discuss the details and assumptions of this approach, first in the context of individual axons, and then our extension to populations of axons with a distribution of axonal calibers. 

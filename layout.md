@@ -26,4 +26,6 @@ qblla8god5g.tex
 figures/JohnGriffiths_Esig3
 figures/JohnGriffiths_Esig4
 bo0j58fv7ng.tex
+dvm2psi89m8.tex
+e0hnu14gae.tex
 urk38hch7cg.tex

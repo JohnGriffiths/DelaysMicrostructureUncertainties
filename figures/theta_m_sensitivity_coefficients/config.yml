@@ -8,7 +8,7 @@ grid:
   rows: 1
   columns: 1
   grid_elements:
-  - path: figures/theta_m_sensitivity_coefficients/theta_m_sensitivity_coefficients.png
+  - path: figures/theta_m_sensitivity_coefficients/sensitivity_coeffs.png
     type: static
     from:
     - 1
@@ -16,5 +16,5 @@ grid:
     to:
     - 1
     - 1
-    url: "/users/4990/articles/297556/master/file/figures/theta_m_sensitivity_coefficients/theta_m_sensitivity_coefficients.png"
     folder_url: "/users/4990/articles/297556/master/folder/figures/theta_m_sensitivity_coefficients"
+    url: "/users/4990/articles/297556/master/file/figures/theta_m_sensitivity_coefficients/sensitivity_coeffs.png"

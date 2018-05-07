@@ -22,7 +22,6 @@ dl4q93ivbtg.tex
 figures/sensitivity_coefficients
 cpvqhhe7o68.tex
 qblla8god5g.tex
-figures/JohnGriffiths_Esig3
 figures/JohnGriffiths_Esig4
 bo0j58fv7ng.tex
 dvm2psi89m8.tex

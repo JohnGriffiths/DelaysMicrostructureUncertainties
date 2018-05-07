@@ -17,6 +17,7 @@ figures/JohnGriffiths_Esig1
 6v8f5etqga.tex
 nks8q2l36fg.tex
 figures/JohnGriffiths_Esig2
+figures/cds_grid1
 figures/pse_heatmaps
 dl4q93ivbtg.tex
 figures/sensitivity_coefficients

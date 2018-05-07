@@ -8,7 +8,7 @@ grid:
   rows: 1
   columns: 1
   grid_elements:
-  - path: figures/JohnGriffiths_Esig4/comb_stan_uncerts.png
+  - path: figures/JohnGriffiths_Esig4/uncertainty_reduction.png
     type: static
     from:
     - 1
@@ -17,4 +17,4 @@ grid:
     - 1
     - 1
     folder_url: "/users/4990/articles/297556/master/folder/figures/JohnGriffiths_Esig4"
-    url: "/users/4990/articles/297556/master/file/figures/JohnGriffiths_Esig4/comb_stan_uncerts.png"
+    url: "/users/4990/articles/297556/master/file/figures/JohnGriffiths_Esig4/uncertainty_reduction.png"

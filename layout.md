@@ -20,7 +20,6 @@ figures/JohnGriffiths_Esig2
 figures/pse_heatmaps
 dl4q93ivbtg.tex
 figures/theta_m_combined_uncertainties
-figures/theta_m_sensitivity_coefficients
 cpvqhhe7o68.tex
 qblla8god5g.tex
 figures/JohnGriffiths_Esig3

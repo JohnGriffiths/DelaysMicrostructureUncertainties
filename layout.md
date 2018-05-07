@@ -16,6 +16,8 @@ i7225sa0ts8.tex
 figures/JohnGriffiths_Esig1
 6v8f5etqga.tex
 nks8q2l36fg.tex
+figures/test
+6qffim30c2.tex
 figures/JohnGriffiths_Esig2
 figures/cds_grid1
 dl4q93ivbtg.tex
